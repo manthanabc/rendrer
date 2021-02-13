@@ -41,7 +41,7 @@ public void draw() {
       if(dis > 0){
         if(dis < min) {
           min = dis;
-          pixels[i] = circle.col;//color((circle.diffuse * lights[0].position[0]));
+          pixels[i] = color((circle.diffuse * lights[0].position[0]));
         }
       }
     }
