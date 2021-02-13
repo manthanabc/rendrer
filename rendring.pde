@@ -8,7 +8,18 @@ float[] o3 = {0, 350, 0};
 color c1 = color(0, 255, 0);
 color c2 = color(255, 0, 0);
 color c3 = color(0, 0, 255);
-sphere[] spheres = {new sphere(o1, c1, 20), new sphere(o2, c2, 20), new sphere(o3, c3, 20)};
+
+sphere[] spheres = {
+    new sphere(o1, c1, 20, 1, 0),
+    new sphere(o2, c2, 20, 0, 1),
+    new sphere(o3, c3, 20)
+  };
+  
+float[] location = {100, 100, 100};
+
+light[] lights = {
+    new pointLight(location, 20)
+  };
 
 public void draw() {
   background(50);
@@ -30,11 +41,10 @@ public void draw() {
       if(dis > 0){
         if(dis < min) {
           min = dis;
-          pixels[i] = color(circle.col);
+          pixels[i] = circle.col;//color((circle.diffuse * lights[0].position[0]));
         }
       }
     }
-    
   }
   updatePixels();
   // circles[1][1] = mouseX;
@@ -54,7 +64,6 @@ public float getCircleDis(float[] dir, float[] location, float radious) {
   float t1 = (-1 * b + sqrt(dis) ) / 2 * a;
   float t2 = (-1 * b - sqrt(dis) ) / 2 * a;
   
-  //print("\t",(t1 > t2)? t2 : t1);
   return (t1 > t2)? (t2 > 0)? t2: t1 : t1;
 }
 
@@ -80,8 +89,7 @@ public void keyPressed(){
 
 public void mouseMoved() {
   float dir = pmouseX - mouseX ;
-  float angel = dir * -0.04;
-  // print("\t",angel);
+  float angel = dir * -0.02;
   for(int i = 0 ; i< spheres.length ; i ++) {
     float x = spheres[i].center[0] ;
     float y = spheres[i].center[1] ;
@@ -90,28 +98,3 @@ public void mouseMoved() {
     spheres[i].center[1] = x * (sin(angel)) + y * (cos(angel));
   }
 }
-//public float intersects(float[] start,float[] end){
-  
-//  //line one
-//  float startx1 = start[0];
-//  float starty1 = start[1];
- 
-//  float startx2 = start[3];
-//  float starty2 = start[4];
-  
-//  float m1 = (starty1 - starty2)/(startx1 - startx2);
-//  float c1 = starty1 - (m1 * startx1);
-
-//  //line two
-//  float endx1 = end[0];
-//  float endy1 = end[1];
- 
-//  float endx2 = end[3];   float endy2 = end[4];
-  
-//  float m2 = (endy1 - endy2)/(endx1 - endx2);
-//  float c2 = endy1 - (m2 * endx1);
-  
-//  float ptx = (c2 - c1)/(m1 - m2) ;
-//  float pty = m1 * ptx + c1;
-//  return m1;
-//}
