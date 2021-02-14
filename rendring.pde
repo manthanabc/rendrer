@@ -1,5 +1,8 @@
 public void setup() {
   size(600, 600); 
+  Vector a = new Vector(0, 0, 1);
+  float[] l = {0, 0 ,100};
+  print(getCircleDis(a, l, 10));
 }
 float[] o1 = {0, 300, 0};
 float[] o2 = {0, 250, 0};
@@ -15,7 +18,7 @@ sphere[] spheres = {
     new sphere(o3, c3, 20)
   };
   
-float[] location = {100, 100, 100};
+float[] location = {100, 100, 100 };
 
 light[] lights = {
     new pointLight(location, 20)
@@ -27,32 +30,29 @@ public void draw() {
   for (int i = 0 ;i<pixels.length; i++) {
     float z = (int) Math.floor(i / width);
     float x = i % width ;
-    float[] l2= {x - width/2, 800, height/2 - z};
 
-    float p = 1 / sqrt(pow(l2[0], 2) + pow(l2[1], 2) + pow(l2[2], 2));
-    l2[0] = l2[0] * p;
-    l2[1] = l2[1] * p;
-    l2[2] = l2[2] * p;
+    Vector ray = new Vector(x - width/2, 800, height/2 - z );
 
     float min = 100000;
     for(int c = 0 ; c< spheres.length ; c++) {
       sphere circle = spheres[c];
-      float dis = getCircleDis(l2, circle.center, circle.radious);
+      float dis = getCircleDis(ray, circle.center, circle.radious);
       if(dis > 0){
         if(dis < min) {
           min = dis;
-          pixels[i] = color((circle.diffuse * lights[0].position[0]));
-        }
+          pixels[i] = color(0);
+        } 
       }
     }
   }
   updatePixels();
+  text("fps -"+frameRate, 10,10);
   // circles[1][1] = mouseX;
 }
 
-public float getCircleDis(float[] dir, float[] location, float radious) {
-  float a = (pow(dir[0], 2) + pow(dir[1], 2) + pow(dir[2], 2)) ;
-  float b = -2 * ((dir[0] * location[0]) + (dir[1] * location[1]) + (dir[2] * location[2])) ;
+public float getCircleDis(Vector ray, float[] location, float radious) {
+  float a = (pow(ray.x, 2) + pow(ray.y, 2) + pow(ray.z, 2)) ;
+  float b = -2 * ((ray.x * location[0]) + (ray.y * location[1]) + (ray.z * location[2])) ;
   float c = (pow(location[0], 2) + pow(location[1], 2) + pow(location[2], 2) - pow(radious, 2)) ;
  
   float dis = (float) (pow(b, 2) - (4 * (a * c)));
@@ -66,6 +66,26 @@ public float getCircleDis(float[] dir, float[] location, float radious) {
   
   return (t1 > t2)? (t2 > 0)? t2: t1 : t1;
 }
+
+public float[] getDir(float[] vector) {
+    float[] l2=vector;
+    float p = 1 / sqrt(pow(l2[0], 2) + pow(l2[1], 2) + pow(l2[2], 2));
+    l2[0] = l2[0] * p;
+    l2[1] = l2[1] * p;
+    l2[2] = l2[2] * p;
+    return l2;
+}
+
+public float getMag(float[] vector) {
+  float[] nV = {vector[0], vector[1], vector[2]};
+  float[] dirV = getDir(vector);
+  return nV[0] / dirV[0];
+}
+
+public float dis3d(float[] v1, float[] v2) {
+  return sqrt(pow(v1[0]-v2[0], 2) + pow(v1[1]-v2[1], 2) + pow(v1[2]-v2[2], 2));
+}
+/// deals with the movement
 
 public void keyPressed(){
   if(key == 'w'){
