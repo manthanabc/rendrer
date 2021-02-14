@@ -14,9 +14,14 @@ class Vector {
   }
   
   public Vector(float Ox, float Oy, float Oz, float x, float y, float z) {
-    this.x = x ;
-    this.y = y ;
-    this.z = z ;
+    float[] v = {x, y, z};
+    this.mag = getMag(v);  
+    float[] dir = getDir(v);
+    
+    this.x = dir[0] ;
+    this.y = dir[1] ;
+    this.z = dir[2] ;
+
     this.Ox = Ox ;
     this.Oy = Oy ;
     this.Oz = Oz ;

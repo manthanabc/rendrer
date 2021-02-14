@@ -18,7 +18,7 @@ sphere[] spheres = {
     new sphere(o3, c3, 20)
   };
   
-float[] location = {100, 100, 100 };
+float[] location = {0, 200, 0 };
 
 light[] lights = {
     new pointLight(location, 20)
@@ -40,7 +40,13 @@ public void draw() {
       if(dis > 0){
         if(dis < min) {
           min = dis;
-          pixels[i] = color(0);
+          ray.mag = dis;
+          Vector Normal = new Vector( ray.x() - circle.center[0], ray.y() - circle.center[1], ray.z() - circle.center[2]);
+          Vector light = new Vector(lights[0].position[0]- ray.x(), lights[0].position[1]-ray.y(), lights[0].position[2]-ray.z());
+          Normal = Normal.getNormal();
+          pixels[i] = color((light.dot(Normal)/ light.mag * Normal.mag)*100);
+          // print(light.dot(Normal.getNormal()) / light.mag + "\t");
+          //exit();
         } 
       }
     }
@@ -116,5 +122,12 @@ public void mouseMoved() {
     float r = sqrt(pow(x, 2) + pow(y, 2)) ;
     spheres[i].center[0] = x * cos(angel) - y * (sin(angel));
     spheres[i].center[1] = x * (sin(angel)) + y * (cos(angel));
+  }
+  
+  for(int i = 0 ; i < lights.length ; i++) {
+    float x = lights[i].position[0] ;
+    float y = lights[i].position[1] ;
+    lights[i].position[0] = x * cos(angel) - y * (sin(angel));
+    lights[i].position[1] = x * (sin(angel)) + y * (cos(angel));
   }
 }
