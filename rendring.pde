@@ -1,8 +1,5 @@
 public void setup() {
   size(600, 600); 
-  Vector a = new Vector(0, 0, 1);
-  float[] l = {0, 1000 ,0};
-  print(getCircleDis(a, l, 10));
 }
 float[] o1 = {0, 300, 0};
 float[] o2 = {0, 250, 0};
@@ -20,8 +17,10 @@ sphere[] spheres = {
   
 float[] location = {0, 200, 0 };
 
+// float[] lightcolor = {};
+
 light[] lights = {
-    new pointLight(location, 20)
+    new pointLight(location, 0.5)
   };
 
 public void draw() {
@@ -41,12 +40,18 @@ public void draw() {
         if(dis < min) {
           min = dis;
           ray.mag = dis;
-          Vector Normal = new Vector( ray.x() - circle.center[0], ray.y() - circle.center[1], ray.z() - circle.center[2]);
-          Vector light = new Vector(lights[0].position[0]- ray.x(), lights[0].position[1]-ray.y(), lights[0].position[2]-ray.z());
-          Normal = Normal.getNormal();
-          pixels[i] = color((light.dot(Normal)/ light.mag * Normal.mag)*100);
-          // print(light.dot(Normal.getNormal()) / light.mag + "\t");
-          //exit();
+          float[] finalColor = { 0, 0, 0 } ;
+          for(int lig= 0; lig < lights.length ; lig++) {
+            light Plight = lights[lig];
+            Vector Normal = new Vector( ray.x() - circle.center[0], ray.y() - circle.center[1], ray.z() - circle.center[2]);
+            Vector lightV = new Vector(Plight.position[0]- ray.x(), Plight.position[1]-ray.y(), Plight.position[2]-ray.z());
+            Normal = Normal.getNormal();
+            float A = (lightV.dot(Normal)/ lightV.mag * Normal.mag);
+            finalColor[0] += A * Plight.intensity * Plight.col[0] * ((circle.col >> 16) & 0xFF)/255;
+            finalColor[1] += A * Plight.intensity * Plight.col[1] * ((circle.col >> 8) & 0xFF)/255;
+            finalColor[2] += A * Plight.intensity * Plight.col[2] * ((circle.col) & 0xFF)/255;
+          }
+          pixels[i] = color(finalColor[0], finalColor[1], finalColor[2]);
         } 
       }
     }
