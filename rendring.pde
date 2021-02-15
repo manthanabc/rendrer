@@ -15,12 +15,12 @@ sphere[] spheres = {
     new sphere(o3, c3, 20)
   };
   
-float[] location = {0, 200, 0 };
-
-// float[] lightcolor = {};
-
+  
+float[] locaLight1 = {400, 600, 680 };
+float[] locaLight2 = {400, 0, 680 };
 light[] lights = {
-    new pointLight(location, 0.5)
+    new pointLight(locaLight1, 0.5),
+    new pointLight(locaLight2, 0.5)
   };
 
 public void draw() {
@@ -46,10 +46,14 @@ public void draw() {
             Vector Normal = new Vector( ray.x() - circle.center[0], ray.y() - circle.center[1], ray.z() - circle.center[2]);
             Vector lightV = new Vector(Plight.position[0]- ray.x(), Plight.position[1]-ray.y(), Plight.position[2]-ray.z());
             Normal = Normal.getNormal();
+            
+            // this is the amount of light reflected by that point
             float A = (lightV.dot(Normal)/ lightV.mag * Normal.mag);
-            finalColor[0] += A * Plight.intensity * Plight.col[0] * ((circle.col >> 16) & 0xFF)/255;
-            finalColor[1] += A * Plight.intensity * Plight.col[1] * ((circle.col >> 8) & 0xFF)/255;
-            finalColor[2] += A * Plight.intensity * Plight.col[2] * ((circle.col) & 0xFF)/255;
+            if (A > 0) { 
+              finalColor[0] += A * Plight.intensity * Plight.col[0] * ((circle.col >> 16) & 0xFF)/255;
+              finalColor[1] += A * Plight.intensity * Plight.col[1] * ((circle.col >> 8) & 0xFF)/255;
+              finalColor[2] += A * Plight.intensity * Plight.col[2] * ((circle.col) & 0xFF)/255;
+            }
           }
           pixels[i] = color(finalColor[0], finalColor[1], finalColor[2]);
         } 
