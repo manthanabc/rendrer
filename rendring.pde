@@ -1,7 +1,7 @@
 public void setup() {
   size(600, 600); 
   Vector a = new Vector(0, 0, 1);
-  float[] l = {0, 0 ,100};
+  float[] l = {0, 1000 ,0};
   print(getCircleDis(a, l, 10));
 }
 float[] o1 = {0, 300, 0};
@@ -98,17 +98,29 @@ public void keyPressed(){
    for(int i =0 ; i< spheres.length ; i++) {
      spheres[i].center[1]-=3 ; 
    }
+   for(int i =0 ; i < lights.length ; i++ ) {
+     lights[i].position[1]-=3; 
+   }
   } else if(key == 's'){
      for(int i =0 ; i< spheres.length ; i++) {
        spheres[i].center[1]+=3 ;
+     }
+     for(int i =0 ; i < lights.length ; i++ ) {
+       lights[i].position[1]+=3; 
      }
    } else if(key == 'a'){
      for(int i =0 ; i< spheres.length ; i++) {
        spheres[i].center[0]+=3 ; 
      }
+     for(int i =0 ; i < lights.length ; i++ ) {
+       lights[i].position[0]+=3; 
+     }
    } else if(key == 'd'){
      for(int i =0 ; i< spheres.length ; i++) {
        spheres[i].center[0]-=3 ; 
+     }
+     for(int i =0 ; i < lights.length ; i++ ) {
+       lights[i].position[0]-=3; 
      }
    }
 }
