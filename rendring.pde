@@ -1,5 +1,12 @@
 public void setup() {
   size(600, 600); 
+  float[] p1 = {-1,1,1} ;
+  float[] p2 = {1,1,1} ;
+  float[] p3 = {-1,0,-1} ;
+  plane p = new plane(p1, p2, p3);
+  Vector r = new Vector(0,1,0);
+  float s = planeDistance(r,p);
+  print(s);
 }
 float[] o1 = {0, 300, 0};
 float[] o2 = {0, 250, 0};
@@ -20,10 +27,10 @@ float[] locaLight1 = {400, 600, 680 };
 float[] locaLight2 = {400, 0, 680 };
 light[] lights = {
     new pointLight(locaLight1, 0.5),
-    new pointLight(locaLight2, 0.5)
+    new pointLight(locaLight2, 0.5,o1)
   };
 
-public void draw() {
+public void draaw() {
   background(50);
   loadPixels();
   for (int i = 0 ;i<pixels.length; i++) {
@@ -82,6 +89,16 @@ public float getCircleDis(Vector ray, float[] location, float radious) {
   return (t1 > t2)? (t2 > 0)? t2: t1 : t1;
 }
 
+public float planeDistance(Vector ray, plane p) {
+ float[] ret = p.getABC();
+ float a = ret[0];
+ float b = ret[1];
+ float c = ret[2];
+
+ float dis = -c / (a*ray.x + b*ray.y - ray.z) ;
+ return dis;
+}
+
 public float[] getDir(float[] vector) {
     float[] l2=vector;
     float p = 1 / sqrt(pow(l2[0], 2) + pow(l2[1], 2) + pow(l2[2], 2));
@@ -100,6 +117,7 @@ public float getMag(float[] vector) {
 public float dis3d(float[] v1, float[] v2) {
   return sqrt(pow(v1[0]-v2[0], 2) + pow(v1[1]-v2[1], 2) + pow(v1[2]-v2[2], 2));
 }
+
 /// deals with the movement
 
 public void keyPressed(){
