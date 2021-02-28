@@ -1,5 +1,6 @@
-class plane {
+class plane extends shape{
  float[] p1, p2, p3;
+ color col;
  public plane(float[] p1,float[] p2,float[] p3) {
    this.p1 = p1;
    this.p2 = p2;
@@ -26,6 +27,43 @@ class plane {
    float[] retu = {a,b,c};
    
    return retu;
+ }
+ 
+ public void move(float dx,float dy, float dz) {
+   this.p1[0] += dx;
+   this.p1[1] += dy;
+   this.p1[2] += dz;
+   
+   this.p2[0] += dx;
+   this.p2[1] += dy;
+   this.p2[2] += dz;
+   
+   this.p3[0] += dx;
+   this.p3[1] += dy;
+   this.p3[2] += dz;
+ }
+ 
+ public void turn(float angel) {
+   p1[0] = p1[0] * cos(angel) - p1[1] * (sin(angel));
+   p1[1] = p1[0] * (sin(angel)) + p1[1] * (cos(angel));
+   
+   p2[0] = p2[0] * cos(angel) - p2[1] * (sin(angel));
+   p2[1] = p2[0] * (sin(angel)) + p2[1] * (cos(angel));
+   
+   p3[0] = p3[0] * cos(angel) - p3[1] * (sin(angel));
+   p3[1] = p3[0] * (sin(angel)) + p3[1] * (cos(angel));
+ }
+ 
+ public float getDistance(Vector ray) {
+   return -1;
+ }
+ 
+ public Vector getNormal(Vector ray) {
+   return new Vector(0,0,0);
+ }
+ 
+ public color getColor() {
+   return this.col; 
  }
   
 }

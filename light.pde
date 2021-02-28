@@ -1,7 +1,9 @@
 abstract class light {
   float[] position = new float[3];
   float intensity ;
-  float[] col = {255, 255, 255} ;
+  color col = color(255, 255, 255);
+  
+  abstract void move(float dx, float dy,float dz);
 }
 
 public class pointLight extends light {
@@ -9,10 +11,15 @@ public class pointLight extends light {
     this.position = location;
     this.intensity = intensity;
   }
-  public pointLight(float[] location, float intensity, float[] col) {
+  public pointLight(float[] location, float intensity, color col) {
     this.position = location;
     this.intensity = intensity;
     this.col = col;
+  }
+  public void move(float dx, float dy,float dz) {
+    this.position[0] +=dx;
+    this.position[1] +=dy;
+    this.position[2] +=dz;
   }
 }
 
@@ -24,9 +31,14 @@ public class dirLight extends light {
     this.direction = direction;
     this.intensity = intensity;
   }
-  public dirLight(float[] direction, float intensity, float[] col) {
+  public dirLight(float[] direction, float intensity, color col) {
     this.direction = direction;
     this.intensity = intensity;
     this.col = col;
+  }
+  public void move(float dx, float dy,float dz) {
+    this.position[0] +=dx;
+    this.position[1] +=dy;
+    this.position[2] +=dz;
   }
 }
