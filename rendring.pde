@@ -1,3 +1,5 @@
+boolean rendring = false ;
+
 public void setup() {
   size(600, 600); 
   float[] p1 = {-1,1,1} ;
@@ -19,9 +21,9 @@ color c2 = color(255, 255, 255);
 color c3 = color(255, 255, 255);
 
 shape[] shapes = {
-     new sphere(o1, c1, 20, 1, 0),
-     new sphere(o2, c2, 20, 0, 1),
-     new sphere(o3, c3, 20),
+     new sphere(o1, c1, 20, 20),
+     new sphere(o2, c2, 20, 6),
+     new sphere(o3, c3, 20, 60 ),
     //new plane(o1,o2,o4,color(0))
   };
 
@@ -30,9 +32,9 @@ float[] locaLight2 = {400, 0, 680 };
 float[] light3 = {-400, 0, 680};
 
 light[] lights = {
-    new pointLight(locaLight1, 0.5,color(200, 0, 200))
-    //new pointLight(locaLight2, 0.5),
-    //new pointLight(light3,0.7,color(0,0,255))
+    new pointLight(locaLight1, 0.5,color(200, 0, 200)),
+    new pointLight(locaLight2, 0.3),
+    new pointLight(light3,0.7,color(0,0,255))
   };
 
 public void draw() {
@@ -69,19 +71,25 @@ public color traceRay(Vector ray) {
             Normal = Normal.getNormal();
             
             // this is the amount of light reflected by that point
+ 
             float A = 0;
-            float diffuse = (lightV.dot(Normal)/ lightV.mag * Normal.mag);
             
-            // specular
-            Vector R = Normal.mul_const(2).mul_const(Normal.dot(lightV)).subV(lightV);
-            Vector nray = ray.mul_const(-1);
-            float specular = Plight.intensity * pow(R.dot(nray)/(R.mag * nray.mag), mouseY);
-            
-            if (specular > 0 ){
-              A+=specular;
+            // computing lighting if in rendrin mode
+            if (rendring){
+              float diffuse = (lightV.dot(Normal)/ lightV.mag * Normal.mag);
+ 
+              // specular
+              Vector R = Normal.mul_const(2).mul_const(Normal.dot(lightV)).subV(lightV);
+              Vector nray = ray.mul_const(-1);
+              float specular = Plight.intensity * pow(R.dot(nray)/(R.mag * nray.mag), sh.getSpecular());
+              if (specular > 0)
+                A+=specular;
+                A+= diffuse;
+            } else {
+              // give a global illumination
+              A = 0.4;
             }
             
-            A+= diffuse;
             
             if (A >= 0) { 
               finalColor[0] += A * Plight.intensity * getRed(Plight.col) * getRed(sh.getColor())/255;
@@ -138,6 +146,12 @@ public void keyPressed(){
     if (key == 'd')
       lig.move(-1*speed,0*speed,0*speed);    
   }
+  
+  if (key == 'r')
+    if (rendring)
+      rendring = false;
+    else 
+     rendring = true ;
 }
 
 public void mouseMoved() {

@@ -88,5 +88,9 @@ class plane extends shape{
  public color getColor() {
    return this.col; 
  }
+ 
+ public float getSpecular() {
+   return 3.2;
+ }
   
 }
