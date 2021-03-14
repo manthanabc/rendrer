@@ -30,9 +30,9 @@ float[] locaLight2 = {400, 0, 680 };
 float[] light3 = {-400, 0, 680};
 
 light[] lights = {
-    new pointLight(locaLight1, 0.5,color(200, 0, 200)),
-    new pointLight(locaLight2, 0.5),
-    new pointLight(light3,0.7,color(0,0,255))
+    new pointLight(locaLight1, 0.5,color(200, 0, 200))
+    //new pointLight(locaLight2, 0.5),
+    //new pointLight(light3,0.7,color(0,0,255))
   };
 
 public void draw() {
@@ -69,8 +69,21 @@ public color traceRay(Vector ray) {
             Normal = Normal.getNormal();
             
             // this is the amount of light reflected by that point
-            float A = (lightV.dot(Normal)/ lightV.mag * Normal.mag);
-            if (A > 0) { 
+            float A = 0;
+            float diffuse = (lightV.dot(Normal)/ lightV.mag * Normal.mag);
+            
+            // specular
+            Vector R = Normal.mul_const(2).mul_const(Normal.dot(lightV)).subV(lightV);
+            Vector nray = ray.mul_const(-1);
+            float specular = Plight.intensity * pow(R.dot(nray)/(R.mag * nray.mag), mouseY);
+            
+            if (specular > 0 ){
+              A+=specular;
+            }
+            
+            A+= diffuse;
+            
+            if (A >= 0) { 
               finalColor[0] += A * Plight.intensity * getRed(Plight.col) * getRed(sh.getColor())/255;
               finalColor[1] += A * Plight.intensity * getGreen(Plight.col) * getGreen(sh.getColor())/255;
               finalColor[2] += A * Plight.intensity * getBlue(Plight.col) * getBlue(sh.getColor())/255;

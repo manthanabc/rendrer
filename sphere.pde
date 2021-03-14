@@ -3,7 +3,7 @@ public class sphere extends shape{
  public color col;
  public float radious;
  public float diffuse;
- public float speacular;
+ public float speacular; 
 
  public sphere(float[] center, color col, float radious) {
    this.diffuse = 1;

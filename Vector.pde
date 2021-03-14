@@ -56,22 +56,26 @@ class Vector {
   public Vector addV(Vector b) {
     float x = this.x * this.mag + b.x * b.mag ;
     float y = this.y * this.mag + b.y * b.mag ;
-    float z = this.z * this.mag + b.z + b.mag ;
+    float z = this.z * this.mag + b.z * b.mag ;
     return new Vector(x, y, z);
   }
   
   public Vector subV(Vector b) {
     float x = this.x * this.mag - b.x * b.mag ;
     float y = this.y * this.mag - b.y * b.mag ;
-    float z = this.z * this.mag - b.z + b.mag ;
+    float z = this.z * this.mag - b.z * b.mag ;
     return new Vector(x, y, z);
   }
   
   public Vector mulV(Vector b) {
     float x = this.x * this.mag * b.x * b.mag ;
     float y = this.y * this.mag * b.y * b.mag ;
-    float z = this.z * this.mag * b.z + b.mag ;
+    float z = this.z * this.mag * b.z * b.mag ;
     return new Vector(x, y, z);
+  }
+  
+  public Vector mul_const(float f) {
+    return new Vector(this.x * f * this.mag, this.y *f*this.mag, this.z *f*this.mag); 
   }
   
   public float x() {   return this.x * this.mag;   }
