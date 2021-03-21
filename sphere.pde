@@ -19,7 +19,7 @@ public class sphere extends shape{
  }
  
  public float getDistance(Vector ray) {
-  float[] location = this.center;
+  float[] location = { this.center[0] - ray.Ox, this.center[1] - ray.Oy, this.center[2] - ray.Oz };
   float radious = this.radious;
   float a = (pow(ray.x, 2) + pow(ray.y, 2) + pow(ray.z, 2)) ;
   float b = -2 * ((ray.x * location[0]) + (ray.y * location[1]) + (ray.z * location[2])) ;
@@ -51,7 +51,7 @@ public class sphere extends shape{
  }
  
  public Vector getNormal(Vector ray) {
-   return new Vector( ray.x() - center[0], ray.y() - center[1], ray.z() - center[2]);
+   return new Vector( (ray.x() + ray.Ox) - center[0], ( ray.y() + ray.Oy) - center[1], (ray.z() + ray.Oz) - center[2]);
  }
  
  public color getColor() {
@@ -60,5 +60,9 @@ public class sphere extends shape{
  
  public float getSpecular() {
    return this.specular;
+ }
+ 
+ public float[] getPosition() {
+  return center; 
  }
 }

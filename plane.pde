@@ -93,4 +93,7 @@ class plane extends shape{
    return 3.2;
  }
   
+ public float[] getPosition() {
+  return p1;   
+ }
 }

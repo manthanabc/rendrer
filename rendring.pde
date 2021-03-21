@@ -1,5 +1,8 @@
 boolean rendring = false ;
-
+float dir = 0, angel = 0;
+int ooy =0;
+int oox =0;
+int ooz = 0;
 public void setup() {
   size(600, 600); 
   float[] p1 = {-1,1,1} ;
@@ -13,7 +16,7 @@ public void setup() {
 
 float[] o1 = {0, 300, 0};
 float[] o2 = {0, 250, 0};
-float[] o3 = {0, 350, 0};
+float[] o3 = {50, 275, 0};
 float[] o4 = {20, 20, 20};
 
 color c1 = color(255, 255, 255);
@@ -23,7 +26,7 @@ color c3 = color(255, 255, 255);
 shape[] shapes = {
      new sphere(o1, c1, 20, 20),
      new sphere(o2, c2, 20, 6),
-     new sphere(o3, c3, 20, 60 ),
+     //new sphere(o3, c3, 20, 60 ),
     //new plane(o1,o2,o4,color(0))
   };
 
@@ -43,17 +46,36 @@ public void draw() {
   for (int i = 0 ;i<pixels.length; i++) {
     float z = (int) Math.floor(i / width);
     float x = i % width ;
-
-    Vector ray = new Vector(x - width/2, 800, height/2 - z );
     
-    pixels[i] = traceRay(ray);
+    float[] txs = transform(x - width/2, 800);
+    float tz = height/2 - z;
+    float ty = txs[1];
+    float tx = txs[0];
+    
 
+    Vector ray = new Vector(oox,ooy,ooz, tx, ty, tz);
+    
+    pixels[i] = traceRay(ray, 0);
   }
+  
   updatePixels();
-  text("fps -"+frameRate, 10,10);
+  fill(0,0,0);
+  stroke(155);
+  rect(0,0,100,100);
+  
+  fill(255,255,0);
+  rect((oox/600.0)*100 + 50,(ooy/600.0)*100,10,10);
+  for(int s=0; s< shapes.length; s++) {
+   shape sh = shapes[s];
+   float[] a = sh.getPosition();
+   fill(100);
+   rect(((a[0]/600.0)*100)+50,((a[1]/600.0)*100), 10, 10);
+  }
+  stroke(100);
+  text("fps -"+(int)frameRate, 550, 20);
 }
 
-public color traceRay(Vector ray) {
+public color traceRay(Vector ray, int depth) {
   float min = 100000;
   color colo = color(50);
   for(int c = 0 ; c< shapes.length ; c++) {
@@ -71,30 +93,35 @@ public color traceRay(Vector ray) {
             Normal = Normal.getNormal();
             
             // this is the amount of light reflected by that point
- 
-            float A = 0;
+            float A = 0.25;
             
-            // computing lighting if in rendrin mode
+            // computing lighting if in rendring mode
             if (rendring){
               float diffuse = (lightV.dot(Normal)/ lightV.mag * Normal.mag);
- 
               // specular
-              Vector R = Normal.mul_const(2).mul_const(Normal.dot(lightV)).subV(lightV);
-              Vector nray = ray.mul_const(-1);
-              float specular = Plight.intensity * pow(R.dot(nray)/(R.mag * nray.mag), sh.getSpecular());
-              if (specular > 0)
-                A+=specular;
-                A+= diffuse;
+              Vector R = (Normal.mul_const(2).mul_const(Normal.dot(lightV))).subV(lightV);
+              float r_dot_ray = R.dot(ray);
+              if(r_dot_ray > 0) {
+                float specular = Plight.intensity * pow(r_dot_ray/(R.mag * ray.mag), sh.getSpecular());
+                //A +=   specular;
+              }
+              A+= diffuse;
             } else {
-              // give a global illumination
-              A = 0.4;
+               return color(0,0,0); 
             }
-            
-            
-            if (A >= 0) { 
-              finalColor[0] += A * Plight.intensity * getRed(Plight.col) * getRed(sh.getColor())/255;
-              finalColor[1] += A * Plight.intensity * getGreen(Plight.col) * getGreen(sh.getColor())/255;
-              finalColor[2] += A * Plight.intensity * getBlue(Plight.col) * getBlue(sh.getColor())/255;
+            if (A >= 0) {
+              if (depth <= -1 ) {
+                 Vector antiray = Normal.mul_const(2).mul_const(Normal.dot(lightV)).subV(lightV);
+                 Vector reflected = new Vector(ray.x(),ray.y(),ray.z(),antiray.x,antiray.y,antiray.z);
+                 color col = traceRay(reflected, depth+1);
+                 finalColor[0] += 0.5 * ((getRed(col) > 0)?getRed(col):0);
+                 finalColor[1] += 0.5 * ((getGreen(col) > 0)?getGreen(col):0);
+                 finalColor[2] += 0.5 * ((getBlue(col) > 0)?getBlue(col):0);
+              }// } else {
+                finalColor[0] += A * Plight.intensity * getRed(Plight.col) * getRed(sh.getColor())/255;
+                finalColor[1] += A * Plight.intensity * getGreen(Plight.col) * getGreen(sh.getColor())/255;
+                finalColor[2] += A * Plight.intensity * getBlue(Plight.col) * getBlue(sh.getColor())/255;
+              //}
             }
           }
           colo =  color(finalColor[0], finalColor[1], finalColor[2]);
@@ -121,31 +148,36 @@ public float getBlue(color col) {
 
 public void keyPressed(){
   
+  
   float speed = 3;
   
   for(int s =0 ; s < shapes.length ; s++) {
     shape sh = shapes[s];
     if (key == 'w') 
-      sh.move(0*speed,-1*speed,0*speed);
+      //sh.move(0*speed,-1*speed,0*speed);
+      ooy += speed;
     if (key == 's')
-      sh.move(0*speed,1*speed,0*speed);
+      //sh.move(0*speed,1*speed,0*speed);
+      ooy -= speed;
     if (key == 'a')
-      sh.move(1*speed,0*speed,0*speed);
+      //sh.move(1*speed,0*speed,0*speed);
+      oox -= speed;
     if (key == 'd')
-      sh.move(-1*speed,0*speed,0*speed);
+      //sh.move(-1*speed,0*speed,0*speed);
+      oox += speed;
   }
   
-  for(int l = 0; l< lights.length ; l++) {
-    light lig = lights[l];
-    if (key == 'w') 
-      lig.move(0*speed,-1*speed,0*speed);
-    if (key == 's')
-      lig.move(0*speed,1*speed,0*speed);
-    if (key == 'a')
-      lig.move(1*speed,0*speed,0*speed);
-    if (key == 'd')
-      lig.move(-1*speed,0*speed,0*speed);    
-  }
+  //for(int l = 0; l< lights.length ; l++) {
+  //  light lig = lights[l];
+  //  if (key == 'w') 
+  //    lig.move(0*speed,-1*speed,0*speed);
+  //  if (key == 's')
+  //    lig.move(0*speed,1*speed,0*speed);
+  //  if (key == 'a')
+  //    lig.move(1*speed,0*speed,0*speed);
+  //  if (key == 'd')
+  //    lig.move(-1*speed,0*speed,0*speed);    
+  //}
   
   if (key == 'r')
     if (rendring)
@@ -155,18 +187,26 @@ public void keyPressed(){
 }
 
 public void mouseMoved() {
-  float dir = pmouseX - mouseX ;
-  float angel = dir * -0.02;
+   dir =  mouseX -pmouseX ;
+   angel = -mouseX/100.0 + (PI/2);//dir * -0.02;
   
-  for(int sh=0 ; sh < shapes.length ; sh++) {
-    shape s = shapes[sh];
-    s.turn(angel); 
-  }
+  //for(int sh=0 ; sh < shapes.length ; sh++) {
+  //  shape s = shapes[sh];
+  //  s.turn(angel); 
+  //}
   
-  for(int i = 0 ; i < lights.length ; i++) {
-    float x = lights[i].position[0] ;
-    float y = lights[i].position[1] ;
-    lights[i].position[0] = x * cos(angel) - y * (sin(angel));
-    lights[i].position[1] = x * (sin(angel)) + y * (cos(angel));
-  }
+  //for(int i = 0 ; i < lights.length ; i++) {
+  //  float x = lights[i].position[0] ;
+  //  float y = lights[i].position[1] ;
+  //  lights[i].position[0] = x * cos(angel) - y * (sin(angel));
+  //  lights[i].position[1] = x * (sin(angel)) + y * (cos(angel));
+  //}
+} 
+ 
+ public float[] transform (float x,float y) { 
+  float nx =  x * cos(angel) - y * (sin(angel));
+  float ny =  x * (sin(angel)) + y * (cos(angel));
+  
+  float[] output = { nx, ny };
+  return output;
 }
