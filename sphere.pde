@@ -19,7 +19,7 @@ public class sphere extends shape{
  }
  
  public float getDistance(Vector ray) {
-  float[] location = { this.center[0] - ray.Ox, this.center[1] - ray.Oy, this.center[2] - ray.Oz };
+  float[] location = { this.center[0] -ray.Ox, this.center[1] -ray.Oy, this.center[2] -ray.Oz };
   float radious = this.radious;
   float a = (pow(ray.x, 2) + pow(ray.y, 2) + pow(ray.z, 2)) ;
   float b = -2 * ((ray.x * location[0]) + (ray.y * location[1]) + (ray.z * location[2])) ;

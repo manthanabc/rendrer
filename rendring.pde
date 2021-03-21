@@ -16,7 +16,7 @@ public void setup() {
 
 float[] o1 = {0, 300, 0};
 float[] o2 = {0, 250, 0};
-float[] o3 = {50, 275, 0};
+float[] o3 = {0, 275, -500};
 float[] o4 = {20, 20, 20};
 
 color c1 = color(255, 255, 255);
@@ -26,7 +26,7 @@ color c3 = color(255, 255, 255);
 shape[] shapes = {
      new sphere(o1, c1, 20, 20),
      new sphere(o2, c2, 20, 6),
-     //new sphere(o3, c3, 20, 60 ),
+     new sphere(o3, c3, 20, 500 ),
     //new plane(o1,o2,o4,color(0))
   };
 
@@ -93,7 +93,7 @@ public color traceRay(Vector ray, int depth) {
             Normal = Normal.getNormal();
             
             // this is the amount of light reflected by that point
-            float A = 0.25;
+            float A = 0.0;
             
             // computing lighting if in rendring mode
             if (rendring){
@@ -101,22 +101,22 @@ public color traceRay(Vector ray, int depth) {
               // specular
               Vector R = (Normal.mul_const(2).mul_const(Normal.dot(lightV))).subV(lightV);
               float r_dot_ray = R.dot(ray);
-              if(r_dot_ray > 0) {
+              if(r_dot_ray < 0) {
                 float specular = Plight.intensity * pow(r_dot_ray/(R.mag * ray.mag), sh.getSpecular());
-                //A +=   specular;
+               // A +=   specular;
               }
-              A+= diffuse;
+             // A+= diffuse;
             } else {
                return color(0,0,0); 
             }
             if (A >= 0) {
               if (depth <= -1 ) {
                  Vector antiray = Normal.mul_const(2).mul_const(Normal.dot(lightV)).subV(lightV);
-                 Vector reflected = new Vector(ray.x(),ray.y(),ray.z(),antiray.x,antiray.y,antiray.z);
+                 Vector reflected = new Vector(ray.x()+ ray.Ox,ray.y()+ ray.Oy,ray.z()+ ray.Oz,antiray.x,antiray.y,antiray.z);
                  color col = traceRay(reflected, depth+1);
-                 finalColor[0] += 0.5 * ((getRed(col) > 0)?getRed(col):0);
-                 finalColor[1] += 0.5 * ((getGreen(col) > 0)?getGreen(col):0);
-                 finalColor[2] += 0.5 * ((getBlue(col) > 0)?getBlue(col):0);
+                 finalColor[0] +=  ((getRed(col) > 0)?getRed(col):0);
+                 finalColor[1] +=  ((getGreen(col) > 0)?getGreen(col):0);
+                 finalColor[2] +=  ((getBlue(col) > 0)?getBlue(col):0);
               }// } else {
                 finalColor[0] += A * Plight.intensity * getRed(Plight.col) * getRed(sh.getColor())/255;
                 finalColor[1] += A * Plight.intensity * getGreen(Plight.col) * getGreen(sh.getColor())/255;
