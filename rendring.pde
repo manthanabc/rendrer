@@ -103,9 +103,9 @@ public color traceRay(Vector ray, int depth) {
               float r_dot_ray = R.dot(ray);
               if(r_dot_ray < 0) {
                 float specular = Plight.intensity * pow(r_dot_ray/(R.mag * ray.mag), sh.getSpecular());
-               // A +=   specular;
+                A +=   specular;
               }
-             // A+= diffuse;
+              A+= diffuse;
             } else {
                return color(0,0,0); 
             }
