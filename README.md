@@ -1,10 +1,11 @@
 # rendrer
 This is a ray-tracing engin written in java (Processsing)
-![gif of rendrer](images/with_minimap.png)
+![gif of rendrer](images/with_minimap.png)(cpu only single thread)
 
 this is an interative rendrer which allows you to move in the sceen with real time rendring
 
 made with processing : https://processing.org/
+
 more about computer graphics : https://www.gabrielgambetta.com/computer-graphics-from-scratch/
 
 ## usage 
